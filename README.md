@@ -8,8 +8,8 @@ The repo should be structured in the following format:
 
 repo <br/>
 &nbsp;&nbsp;&nbsp;&nbsp;|\_\_[predict.py](#predict-py)<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;|\_\_[model](#model-and-data-folder)<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;|\_\_[data](#model-and-data-folder)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;|\_\_[model](##quot-model-quot-and-quot-data-quot-folders)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;|\_\_[data](##quot-model-quot-and-quot-data-quot-folders)<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;|\_\_[requirement.txt](#requirement-txt)<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;|\_\_[other artifacts](#other-artifacts)<br/>
 
@@ -54,6 +54,6 @@ There is no format restriction on the "model" and "data" folder as long as the i
 
 Before start deploying the model, packages from requirement.txt are installed to setup the environment.
 
-### **Other artifacts**
+### **Other Artifacts**
 
-all other files/folders.
+All other files/folders.
