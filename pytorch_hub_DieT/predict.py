@@ -26,3 +26,6 @@ def run(model):
     out = model(img)
     clsidx = torch.argmax(out)
     return clsidx.item()
+
+if __name__ == '__main__':
+    run(load_model())
