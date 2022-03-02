@@ -21,7 +21,7 @@ def run(model):
         transforms.Normalize(IMAGENET_DEFAULT_MEAN, IMAGENET_DEFAULT_STD),
     ])
 
-    img = Image.open('./data')
+    img = Image.open('./data/image.png')
     img = transform(img)[None,]
     out = model(img)
     clsidx = torch.argmax(out)
