@@ -1,26 +1,36 @@
 from utils import *
 from train_model.real_nvp import RealNVPModel
-from tensorflow.keras.optimizer import Adam
+from tensorflow.keras.optimizers import Adam
 from aibro.training import online_fit
 
-
 def nll(y_true, y_pred):
-    return -y_pred.log_prob(y_true)
+        return -y_pred.log_prob(y_true)
+
+class Trainer:
+
+    def __init__(self):
+        self.realnvp_model = RealNVPModel()
+        self.realnvp_model.build((1, 32, 32, 3))
+
+        self.train_ds = load_dataset('train')
+        self.val_ds = load_dataset('val')
+        self.test_ds = load_dataset('test')
+
+        self.realnvp_model.compile(loss=nll, optimizer=Adam())
+        # realnvp_model.fit(train_ds, validation_data=val_ds, epochs=20)
+
+    def train(self):
+        history = self.realnvp_model.fit(
+            self.train_ds,
+            validation_data=self.val_ds,
+            epochs=20,
+        )
+        return history
+
+    
+    def save(self):
+        self.realnvp_model.save('model')
 
 
-realnvp_model = RealNVPModel()
-realnvp_model.build((1, 32, 32, 3))
-
-train_ds = load_dataset('train')
-val_ds = load_dataset('val')
-test_ds = load_dataset('test')
-
-realnvp_model.compile(loss=nll, optimizer=Adam())
-# realnvp_model.fit(train_ds, validation_data=val_ds, epochs=20)
-history = online_fit(
-    model=realnvp_model,
-    train_ds=train_ds,
-    valid_ds=val_ds,
-    epochs=20,
-    directory_to_save_ckpt="./model",
-)
+    def test(self):
+        self.realnvp_model.evaluate(self.test_ds)

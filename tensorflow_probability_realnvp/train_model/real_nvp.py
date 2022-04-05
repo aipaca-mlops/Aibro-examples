@@ -1,11 +1,8 @@
 import tensorflow as tf
 import tensorflow_probability as tfp
-import numpy as np
-import matplotlib.pyplot as plt
 
 from tensorflow.keras import Model, Input
 from tensorflow.keras.layers import Conv2D, BatchNormalization
-from tensorflow.keras.optimizers import Adam
 
 tfd = tfp.distributions
 tfb = tfp.bijectors
@@ -28,6 +25,33 @@ class AffineCouplingLayer(tfb.Bijector):
         self.shift_and_log_scale_fn = shift_and_log_scale_fn
         self.mask_type = mask_type
         self.orientation = orientation
+
+    def _get_mask(self, shape):
+        """
+        This internal method should use the binary mask functions above to compute
+        and return the binary mask, according to the arguments passed in to the
+        initialiser.
+        """
+        if self.mask_type == "channel":
+            return channel_binary_mask(num_channels=shape[-1], orientation=self.orientation)
+        return checkerboard_binary_mask(shape=shape[1:3], orientation=self.orientation) 
+        
+
+    def _forward(self, x):
+        b = self._get_mask(x.shape)
+        return forward(x, b, self.shift_and_log_scale_fn)
+
+    def _inverse(self, y):
+        b = self._get_mask(y.shape)
+        return inverse(y, b, self.shift_and_log_scale_fn)
+
+    def _forward_log_det_jacobian(self, x):
+        b = self._get_mask(x.shape)
+        return forward_log_det_jacobian(x, b, self.shift_and_log_scale_fn)
+
+    def _inverse_log_det_jacobian(self, y):
+        b = self._get_mask(y.shape)
+        return inverse_log_det_jacobian(y, b, self.shift_and_log_scale_fn)
         
 
 class Squeeze(tfb.Bijector):
@@ -174,32 +198,6 @@ class RealNVPModel(Model):
     def sample(self, batch_size):
         sample = self.base.sample(batch_size)
         return self.bijector.inverse(sample)
-        
-    def _get_mask(self, shape):
-        """
-        This internal method should use the binary mask functions above to compute
-        and return the binary mask, according to the arguments passed in to the
-        initialiser.
-        """
-        if self.mask_type == "channel":
-            return channel_binary_mask(num_channels=shape[-1], orientation=self.orientation)
-        return checkerboard_binary_mask(shape=shape[1:3], orientation=self.orientation) 
-        
-    def _forward(self, x):
-        b = self._get_mask(x.shape)
-        return forward(x, b, self.shift_and_log_scale_fn)
-
-    def _inverse(self, y):
-        b = self._get_mask(y.shape)
-        return inverse(y, b, self.shift_and_log_scale_fn)
-
-    def _forward_log_det_jacobian(self, x):
-        b = self._get_mask(x.shape)
-        return forward_log_det_jacobian(x, b, self.shift_and_log_scale_fn)
-
-    def _inverse_log_det_jacobian(self, y):
-        b = self._get_mask(y.shape)
-        return inverse_log_det_jacobian(y, b, self.shift_and_log_scale_fn)
 
 
 def realnvp_block(shift_and_log_scale_fns, squeeze):
