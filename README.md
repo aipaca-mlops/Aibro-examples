@@ -50,10 +50,12 @@ run(load_model())
 
 There is no format restriction on the "model" and "data" folder as long as the input and output of load_model() and run() from predict.py are correct.
 
-### **requirement.txt**
+### **requirements.txt**
 
-Before start deploying the model, packages from requirement.txt are installed to setup the environment.
+Before start deploying the model, packages from requirements.txt are installed to setup the environment.
 
 ### **Other Artifacts**
 
 All other files/folders.
+
+### **Try Examples on ‘play_examples.ipynb’**

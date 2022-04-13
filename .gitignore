@@ -1,1 +1,4 @@
-venv
+repo_venv
+*/__pycache__
+tensorflow_probability_realnvp/data/*
+*.npz
